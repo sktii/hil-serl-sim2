@@ -78,7 +78,7 @@ After 30000 steps of training and human's intervention(about 1 hours), our polic
 4. **Install the serl_launcher**
     ```bash
     git clone git@github.com:sktii/hil-serl-sim2.git
-    cd hil-serl-self2
+    cd hil-serl-sim2
     cd serl_launcher
     pip install -e .
     pip install -r requirements.txt
