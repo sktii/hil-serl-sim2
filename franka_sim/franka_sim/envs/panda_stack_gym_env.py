@@ -2,9 +2,11 @@ from pathlib import Path
 from typing import Any, Literal, Tuple, Dict
 
 import gym
+import gymnasium # Need gymnasium.spaces for SERL compatibility
 import mujoco
 import numpy as np
-from gym import spaces
+from gym import spaces as gym_spaces # Keep gym spaces for legacy compat
+from gymnasium import spaces as gymnasium_spaces # Use gymnasium spaces for env spaces
 import time
 
 try:
@@ -25,7 +27,7 @@ _CARTESIAN_BOUNDS = np.asarray([[0.2, -0.3, 0], [0.6, 0.3, 0.5]])
 _SAMPLING_BOUNDS = np.asarray([[0.25, -0.25], [0.55, 0.25]])
 
 
-class PandaStackCubeGymEnv(MujocoGymEnv):
+class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
     metadata = {"render_modes": ["rgb_array", "human"]}
 
     def __init__(
@@ -44,7 +46,8 @@ class PandaStackCubeGymEnv(MujocoGymEnv):
         self.hz = hz
         self._action_scale = action_scale
 
-        super().__init__(
+        MujocoGymEnv.__init__(
+            self,
             xml_path=_XML_PATH,
             seed=seed,
             control_dt=control_dt,
@@ -82,44 +85,44 @@ class PandaStackCubeGymEnv(MujocoGymEnv):
         self._target_cube_z = self._model.geom("target_geom").size[2]
 
         if self.image_obs:
-            self.observation_space = spaces.Dict(
+            self.observation_space = gymnasium_spaces.Dict(
                 {
-                    "state": spaces.Dict(
+                    "state": gymnasium_spaces.Dict(
                         {
-                            "tcp_pose": spaces.Box(
-                                -np.inf, np.inf, shape=(7,)
+                            "tcp_pose": gymnasium_spaces.Box(
+                                -np.inf, np.inf, shape=(7,), dtype=np.float32
                             ),  # xyz + quat
-                            "tcp_vel": spaces.Box(-np.inf, np.inf, shape=(6,)),
-                            "gripper_pose": spaces.Box(-1, 1, shape=(1,)),
-                            "tcp_force": spaces.Box(-np.inf, np.inf, shape=(3,)),
-                            "tcp_torque": spaces.Box(-np.inf, np.inf, shape=(3,)),
-                            "target_cube_pos": spaces.Box(-np.inf, np.inf, shape=(3,)),
+                            "tcp_vel": gymnasium_spaces.Box(-np.inf, np.inf, shape=(6,), dtype=np.float32),
+                            "gripper_pose": gymnasium_spaces.Box(-1, 1, shape=(1,), dtype=np.float32),
+                            "tcp_force": gymnasium_spaces.Box(-np.inf, np.inf, shape=(3,), dtype=np.float32),
+                            "tcp_torque": gymnasium_spaces.Box(-np.inf, np.inf, shape=(3,), dtype=np.float32),
+                            "target_cube_pos": gymnasium_spaces.Box(-np.inf, np.inf, shape=(3,), dtype=np.float32),
                         }
                     ),
-                    "images": spaces.Dict(
-                        {key: spaces.Box(0, 255, shape=(128, 128, 3), dtype=np.uint8)
+                    "images": gymnasium_spaces.Dict(
+                        {key: gymnasium_spaces.Box(0, 255, shape=(128, 128, 3), dtype=np.uint8)
                                     for key in config.REALSENSE_CAMERAS}
                     ),
                 }
             )
         else:
-            self.observation_space = spaces.Dict(
+            self.observation_space = gymnasium_spaces.Dict(
                 {
-                    "state": spaces.Dict(
+                    "state": gymnasium_spaces.Dict(
                         {
-                            "panda/tcp_pos": spaces.Box(
+                            "panda/tcp_pos": gymnasium_spaces.Box(
                                 -np.inf, np.inf, shape=(3,), dtype=np.float32
                             ),
-                            "panda/tcp_vel": spaces.Box(
+                            "panda/tcp_vel": gymnasium_spaces.Box(
                                 -np.inf, np.inf, shape=(3,), dtype=np.float32
                             ),
-                            "panda/gripper_pos": spaces.Box(
+                            "panda/gripper_pos": gymnasium_spaces.Box(
                                 -np.inf, np.inf, shape=(1,), dtype=np.float32
                             ),
-                            "block_pos": spaces.Box(
+                            "block_pos": gymnasium_spaces.Box(
                                 -np.inf, np.inf, shape=(3,), dtype=np.float32
                             ),
-                            "target_cube_pos": spaces.Box(
+                            "target_cube_pos": gymnasium_spaces.Box(
                                 -np.inf, np.inf, shape=(3,), dtype=np.float32
                             ),
                         }
@@ -127,7 +130,7 @@ class PandaStackCubeGymEnv(MujocoGymEnv):
                 }
             )
 
-        self.action_space = spaces.Box(
+        self.action_space = gymnasium_spaces.Box(
             low=np.asarray([-1.0, -1.0, -1.0,-1.0, -1.0, -1.0, -1.0]),
             high=np.asarray([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]),
             dtype=np.float32,
@@ -139,9 +142,15 @@ class PandaStackCubeGymEnv(MujocoGymEnv):
             self._viewer = MujocoRenderer(
                 self.model,
                 self.data,
-                width=render_spec.width,
-                height=render_spec.height,
+                # width=render_spec.width, # Removed to avoid unexpected argument error
+                # height=render_spec.height,
             )
+            # manually set width/height if possible/needed
+            if hasattr(self._viewer, 'width'):
+                self._viewer.width = render_spec.width
+            if hasattr(self._viewer, 'height'):
+                self._viewer.height = render_spec.height
+
             # self._viewer.render(self.render_mode)
         except ImportError:
             # Fallback or error if gymnasium not available or headless issue

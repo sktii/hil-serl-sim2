@@ -142,7 +142,7 @@ class TrainConfig(DefaultTrainingConfig):
 
 
 import glfw
-import gym
+import gymnasium as gym # Changed from import gym to gymnasium
 class KeyBoardIntervention2(gym.ActionWrapper):
     def __init__(self, env, action_indices=None):
         super().__init__(env)
@@ -171,8 +171,11 @@ class KeyBoardIntervention2(gym.ActionWrapper):
         }
 
         # 设置 GLFW 键盘回调
-        if hasattr(self.env, "_viewer") and self.env._viewer and hasattr(self.env._viewer, "viewer"):
-             glfw.set_key_callback(self.env._viewer.viewer.window, self.glfw_on_key)
+        # Protect against headless/missing viewer
+        if self.env.render_mode == "human" and hasattr(self.env, "_viewer") and self.env._viewer:
+             if hasattr(self.env._viewer, "viewer") and self.env._viewer.viewer:
+                  if hasattr(self.env._viewer.viewer, "window") and self.env._viewer.viewer.window:
+                       glfw.set_key_callback(self.env._viewer.viewer.window, self.glfw_on_key)
 
     def glfw_on_key(self, window, key, scancode, action, mods):
         if action == glfw.PRESS:
