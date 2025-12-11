@@ -45,8 +45,8 @@ After 30000 steps of training and human's intervention(about 1 hours), our polic
 1. **Setup Conda Environment:**
     create an environment with
     ```bash
-    conda create -n hilserl python=3.10
-    conda activate hilserl
+    conda create -n hilserl_self2 python=3.10
+    conda activate hilserl_self2
     ```
 
 2. **Install pytorch**
@@ -57,9 +57,11 @@ After 30000 steps of training and human's intervention(about 1 hours), our polic
 
 3. **Install Jax as follows:**
    
-    For CPU (not recommended):
+    For CPU (not recommended)(WSL):
      ```bash
-     pip install --upgrade "jax[cpu]"
+     #pip install --upgrade "jax[cpu]"
+     pip install --upgrade "jax[cuda12_pip]==0.4.35" \
+    -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
      ```
 
     For GPU:
@@ -75,6 +77,8 @@ After 30000 steps of training and human's intervention(about 1 hours), our polic
 
 4. **Install the serl_launcher**
     ```bash
+    git clone git@github.com:sktii/hil-serl-sim2.git
+    cd hil-serl-self2
     cd serl_launcher
     pip install -e .
     pip install -r requirements.txt
@@ -85,12 +89,14 @@ After 30000 steps of training and human's intervention(about 1 hours), our polic
     ```
     cd franka_sim
     pip install -e .
+    pip install -r requirements.txt
     ```
 
 
 6. **Install the requirement**
 
     ```
+    cd ..
     pip install -r requirements.txt
     ```
 
