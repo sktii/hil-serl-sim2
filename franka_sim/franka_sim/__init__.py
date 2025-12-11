@@ -18,3 +18,9 @@ register(
     max_episode_steps=100,
     kwargs={"image_obs": True},
 )
+
+register(
+    id="PandaStackCube-v0",
+    entry_point="franka_sim.envs:PandaStackCubeGymEnv",
+    max_episode_steps=100,
+)
