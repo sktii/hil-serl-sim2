@@ -151,7 +151,8 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
             if hasattr(self._viewer, 'height'):
                 self._viewer.height = render_spec.height
 
-            # self._viewer.render(self.render_mode)
+            if self.render_mode == "human":
+                self._viewer.render(self.render_mode)
         except ImportError:
             # Fallback or error if gymnasium not available or headless issue
             # In headless environment without GL, this might fail.
