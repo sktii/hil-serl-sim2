@@ -5,11 +5,13 @@ from experiments.egg_flip.config import TrainConfig as EggFlipTrainConfig
 
 # startear add
 from experiments.pick_cube_sim.config import TrainConfig as PickCubeTrainConfig
+from experiments.stack_cube_sim.config import TrainConfig as StackCubeTrainConfig
 
 CONFIG_MAPPING = {
                 "ram_insertion": RAMInsertionTrainConfig,
                 "usb_pickup_insertion": USBPickupInsertionTrainConfig,
                 "object_handover": ObjectHandoverTrainConfig,
                 "egg_flip": EggFlipTrainConfig,
-                "pick_cube_sim": PickCubeTrainConfig
+                "pick_cube_sim": PickCubeTrainConfig,
+                "stack_cube_sim": StackCubeTrainConfig
                }
