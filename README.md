@@ -90,6 +90,7 @@ After 30000 steps of training and human's intervention(about 1 hours), our polic
     cd franka_sim
     pip install -e .
     pip install -r requirements.txt
+    cd ..
     ```
 
 
@@ -97,7 +98,10 @@ After 30000 steps of training and human's intervention(about 1 hours), our polic
 
     ```
     cd ..
-    pip install -r requirements.txt
+    pip install pyrealsense2
+    pip install pyquaternion
+    pip install easyhid
+    pip install flax
     ```
 
 
