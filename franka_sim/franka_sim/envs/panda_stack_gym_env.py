@@ -199,6 +199,7 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
         self._z_success = self._z_init + self._target_cube_z * 2
 
         self.env_step = 0
+        self.success_counter = 0
 
         obs = self._compute_observation()
         return obs, {"succeed": False}
@@ -279,7 +280,14 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
             if self.intervened == True:
                 time.sleep(max(0, (1.0 / self.hz) - dt))
 
-        success = self._compute_success()
+        instant_success = self._compute_success(gripper_val)
+        if instant_success:
+            self.success_counter += 1
+        else:
+            self.success_counter = 0
+
+        success = self.success_counter >= (2.0 / self.control_dt)
+
         if success:
             print(f'success!')
             # Big reward for success
@@ -290,7 +298,7 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
 
         return obs, rew, terminated, False, {"succeed": success, "grasp_penalty": grasp_penalty}
 
-    def _compute_success(self):
+    def _compute_success(self, gripper_val):
         block_pos = self._data.sensor("block_pos").data
         # Target cube position. Note: self._data.body("target_cube").xpos gives current global pos
         target_pos = self._data.body("target_cube").xpos
@@ -307,7 +315,26 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
         # We want block bottom > target top approx.
         z_success = block_pos[2] > (target_pos[2] + self._target_cube_z)
 
-        return xy_success and z_success
+        # Check if gripper is open (released)
+        # gripper_val is ~0 (closed) to 1 (open) or width.
+        # If block width is 0.02, holding it means width ~0.02. If open, width > 0.02
+        # But 'gripper_val' comes from observation which is normalized ctrl?
+        # In _compute_observation: gripper_pos = ctrl / 255.
+        # If open, ctrl is 255 -> 1.0. If closed on block, ctrl might still be 255?
+        # No, 'fingers_actuator' is position controlled (usually) or force?
+        # If position controlled, 255 = max width (0.08).
+        # If we just released it, we commanded 1.0.
+        # If we rely on obs["state"]["gripper_pose"], it is the commanded value.
+        # If we commanded open, it is > 0.9.
+        gripper_open = gripper_val > 0.9
+
+        # Check if block is static
+        # Joint 'block' is a freejoint.
+        # qvel has 6 dims.
+        block_vel = self._data.jnt("block").qvel[:3]
+        is_static = np.linalg.norm(block_vel) < 0.01
+
+        return xy_success and z_success and gripper_open and is_static
 
     def render(self):
         if self._viewer is None:
