@@ -286,7 +286,7 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
         else:
             self.success_counter = 0
 
-        success = self.success_counter >= (1.0 / self.control_dt)
+        success = self.success_counter >= (2.0 / self.control_dt)
 
         if success:
             print(f'success!')
@@ -307,16 +307,13 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
         # target geom size is 0.025, block geom size is 0.02 (from xml)
         # Total width 0.045
         xy_dist = np.linalg.norm(block_pos[:2] - target_pos[:2])
-        xy_success = xy_dist < 0.06
+        xy_success = xy_dist < 0.04
 
         # Check Z height
         # Block should be above target cube. Target cube top is at z ~ 0.05 (pos 0.025 + size 0.025)
         # Block z pos is center of block. Block size is 0.02. So block bottom is z - 0.02.
         # We want block bottom > target top approx.
-        
-        #z_success = block_pos[2] > (target_pos[2] + self._target_cube_z)
-        z_success = block_pos[2] > (self._z_init + self._target_cube_z)
-        #z_success = block_pos[2] > (self._z_init + 0.003)
+        z_success = block_pos[2] > (target_pos[2] + self._target_cube_z)
 
         # Check if gripper is open (released)
         # gripper_val is ~0 (closed) to 1 (open) or width.
