@@ -323,10 +323,10 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
         # If open, ctrl is 255 -> 1.0. If closed on block, ctrl might still be 255?
         # No, 'fingers_actuator' is position controlled (usually) or force?
         # If position controlled, 255 = max width (0.08).
-        # If we just released it, we commanded 1.0.
+        # If we just released it, we commanded 0.0 (Open).
         # If we rely on obs["state"]["gripper_pose"], it is the commanded value.
-        # If we commanded open, it is > 0.9.
-        gripper_open = gripper_val > 0.9
+        # If we commanded open, it is < 0.1.
+        gripper_open = gripper_val < 0.1
 
         # Check if block is static
         # Joint 'block' is a freejoint.
