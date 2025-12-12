@@ -37,14 +37,20 @@
     </body>
 
     <!-- Obstacles (Pillars) -->
-    <geom name="pillar1" type="cylinder" size="0.02 0.2" pos="0.4 0.1 0.2" rgba="0.5 0.5 0.5 1"/>
-    <geom name="pillar2" type="cylinder" size="0.02 0.2" pos="0.4 0.3 0.2" rgba="0.5 0.5 0.5 1"/>
-    <geom name="pillar3" type="cylinder" size="0.02 0.2" pos="0.7 0.1 0.2" rgba="0.5 0.5 0.5 1"/>
-    <geom name="pillar4" type="cylinder" size="0.02 0.2" pos="0.7 0.3 0.2" rgba="0.5 0.5 0.5 1"/>
-    <geom name="pillar5" type="cylinder" size="0.02 0.2" pos="0.3 0.2 0.2" rgba="0.5 0.5 0.5 1"/>
-    <geom name="pillar6" type="cylinder" size="0.02 0.2" pos="0.8 0.2 0.2" rgba="0.5 0.5 0.5 1"/>
-    <geom name="pillar7" type="cylinder" size="0.02 0.2" pos="0.55 0.4 0.2" rgba="0.5 0.5 0.5 1"/>
-    <geom name="pillar8" type="cylinder" size="0.02 0.2" pos="0.55 -0.1 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar_cyl_1" type="cylinder" size="0.02 0.2" pos="0.4 0.1 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar_cyl_2" type="cylinder" size="0.02 0.2" pos="0.4 0.3 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar_cyl_3" type="cylinder" size="0.02 0.2" pos="0.7 0.1 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar_cyl_4" type="cylinder" size="0.02 0.2" pos="0.7 0.3 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar_cyl_5" type="cylinder" size="0.02 0.2" pos="0.3 0.2 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar_cyl_6" type="cylinder" size="0.02 0.2" pos="0.8 0.2 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar_cyl_7" type="cylinder" size="0.02 0.2" pos="0.55 0.4 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar_cyl_8" type="cylinder" size="0.02 0.2" pos="0.55 -0.1 0.2" rgba="0.5 0.5 0.5 1"/>
+
+    <!-- Obstacles (Box Pillars) -->
+    <geom name="pillar_box_1" type="box" size="0.02 0.02 0.2" pos="0.45 0.15 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar_box_2" type="box" size="0.02 0.02 0.2" pos="0.45 0.35 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar_box_3" type="box" size="0.02 0.02 0.2" pos="0.75 0.15 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar_box_4" type="box" size="0.02 0.02 0.2" pos="0.75 0.35 0.2" rgba="0.5 0.5 0.5 1"/>
     
   </worldbody>
 

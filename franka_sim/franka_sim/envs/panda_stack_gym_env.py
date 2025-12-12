@@ -192,6 +192,9 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
         self._model.body_pos[self._target_cube_id][:2] = target_xy
         # Z position is fixed as in XML (0.025)
 
+        # Randomize pillars
+        self._randomize_pillars()
+
         mujoco.mj_forward(self._model, self._data)
 
         # Cache the initial block height.
@@ -203,6 +206,50 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
 
         obs = self._compute_observation()
         return obs, {"succeed": False}
+
+    def _randomize_pillars(self):
+        # Workspace bounds: x=[0.25, 0.55], y=[-0.25, 0.25] from _SAMPLING_BOUNDS
+        # Pillars should avoid the target and block.
+        # We can just sample within a slightly larger area or the same area.
+
+        # Pillar cylinders 1-8
+        for i in range(1, 9):
+            name = f"pillar_cyl_{i}"
+            body_id = mujoco.mj_name2id(self._model, mujoco.mjtObj.mjOBJ_GEOM, name)
+            if body_id != -1:
+                # Random pos
+                # Keep within reach but random
+                px = self._random.uniform(0.2, 0.6)
+                py = self._random.uniform(-0.3, 0.3)
+                self._model.geom_pos[body_id][:2] = [px, py]
+
+                # Random size: cylinder size is [radius, half_height]
+                # radius ~ 0.01 to 0.03
+                # height ~ 0.1 to 0.3
+                radius = self._random.uniform(0.01, 0.03)
+                half_height = self._random.uniform(0.1, 0.3)
+                self._model.geom_size[body_id] = [radius, half_height, 0] # 3rd param ignored for cylinder
+
+                # Random color
+                self._model.geom_rgba[body_id] = [*self._random.uniform(0, 1, 3), 1.0]
+
+        # Pillar boxes 1-4
+        for i in range(1, 5):
+            name = f"pillar_box_{i}"
+            body_id = mujoco.mj_name2id(self._model, mujoco.mjtObj.mjOBJ_GEOM, name)
+            if body_id != -1:
+                px = self._random.uniform(0.2, 0.6)
+                py = self._random.uniform(-0.3, 0.3)
+                self._model.geom_pos[body_id][:2] = [px, py]
+
+                # Random size: box size is [hx, hy, hz]
+                hx = self._random.uniform(0.01, 0.03)
+                hy = self._random.uniform(0.01, 0.03)
+                hz = self._random.uniform(0.1, 0.3)
+                self._model.geom_size[body_id] = [hx, hy, hz]
+
+                # Random color
+                self._model.geom_rgba[body_id] = [*self._random.uniform(0, 1, 3), 1.0]
 
     def step(
         self, action: np.ndarray
