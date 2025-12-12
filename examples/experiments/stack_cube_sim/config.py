@@ -51,7 +51,7 @@ class EnvConfig(DefaultEnvConfig):
     RANDOM_RZ_RANGE = 0.05
     ACTION_SCALE = (0.01, 0.06, 1)
     DISPLAY_IMAGE = True
-    MAX_EPISODE_LENGTH = 100
+    MAX_EPISODE_LENGTH = 2000
     COMPLIANCE_PARAM = {
         "translational_stiffness": 2000,
         "translational_damping": 89,
