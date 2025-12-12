@@ -239,6 +239,9 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
                 half_height = self._random.uniform(0.05, 0.15)
                 self._model.geom_size[body_id] = [radius, half_height, 0]
 
+                # Adjust Z pos to sit on floor
+                self._model.geom_pos[body_id][2] = half_height
+
                 # Random color
                 self._model.geom_rgba[body_id] = [*self._random.uniform(0, 1, 3), 1.0]
 
@@ -255,6 +258,9 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
                 hy = self._random.uniform(0.01, 0.03)
                 hz = self._random.uniform(0.05, 0.15)
                 self._model.geom_size[body_id] = [hx, hy, hz]
+
+                # Adjust Z pos to sit on floor
+                self._model.geom_pos[body_id][2] = hz
 
                 # Random color
                 self._model.geom_rgba[body_id] = [*self._random.uniform(0, 1, 3), 1.0]
@@ -351,7 +357,7 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
         else:
             self.success_counter = 0
 
-        success = self.success_counter >= (2.0 / self.control_dt)
+        success = self.success_counter >= (1.0 / self.control_dt)
 
         if success:
             print(f'success!')
