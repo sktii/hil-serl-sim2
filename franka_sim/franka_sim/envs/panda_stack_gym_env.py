@@ -233,10 +233,10 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
                 self._model.geom_pos[body_id][:2] = pos
 
                 # Random size: cylinder size is [radius, half_height]
-                # radius ~ 0.01 to 0.03
-                # height ~ 0.1 to 0.3 (2x height)
-                radius = self._random.uniform(0.01, 0.03)
-                half_height = self._random.uniform(0.1, 0.3)
+                # radius ~ 0.02 to 0.03 (increased min radius for better collision)
+                # height ~ 0.07 to 0.2 (2/3 of 0.1-0.3)
+                radius = self._random.uniform(0.02, 0.03)
+                half_height = self._random.uniform(0.07, 0.2)
                 self._model.geom_size[body_id] = [radius, half_height, 0]
 
                 # Adjust Z pos to sit on floor
@@ -254,9 +254,9 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
                 self._model.geom_pos[body_id][:2] = pos
 
                 # Random size: box size is [hx, hy, hz]
-                hx = self._random.uniform(0.01, 0.03)
-                hy = self._random.uniform(0.01, 0.03)
-                hz = self._random.uniform(0.1, 0.3)
+                hx = self._random.uniform(0.02, 0.03)
+                hy = self._random.uniform(0.02, 0.03)
+                hz = self._random.uniform(0.07, 0.2)
                 self._model.geom_size[body_id] = [hx, hy, hz]
 
                 # Adjust Z pos to sit on floor
