@@ -376,7 +376,7 @@ def main(_):
     rng, sampling_rng = jax.random.split(rng)
 
     assert FLAGS.exp_name in CONFIG_MAPPING, "Experiment folder not found."
-    if FLAGS.exp_name == 'pick_cube_sim':
+    if FLAGS.exp_name == 'pick_cube_sim'or FLAGS.exp_name == 'stack_cube_sim':
         if FLAGS.actor:
             env = config.get_environment(
                 fake_env=FLAGS.learner,
@@ -437,7 +437,7 @@ def main(_):
     # replicate agent across devices
     # need the jnp.array to avoid a bug where device_put doesn't recognize primitives
     agent = jax.device_put(
-        jax.tree_map(jnp.array, agent), sharding.replicate()
+        jax.tree_util.tree_map(jnp.array, agent), sharding.replicate()
     )
 
     if FLAGS.checkpoint_path is not None and os.path.exists(FLAGS.checkpoint_path):
