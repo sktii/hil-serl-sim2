@@ -280,6 +280,16 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
             if self.intervened == True:
                 time.sleep(max(0, (1.0 / self.hz) - dt))
 
+        # Check collision
+        collision = self._check_collision()
+        if collision:
+            print("Collision with pillar detected!")
+            terminated = True
+            rew = -1.0 # Penalty for collision
+            success = False
+            self.success_counter = 0
+            return obs, rew, terminated, False, {"succeed": success, "grasp_penalty": grasp_penalty}
+
         instant_success = self._compute_success(gripper_val)
         if instant_success:
             self.success_counter += 1
@@ -297,6 +307,25 @@ class PandaStackCubeGymEnv(MujocoGymEnv, gymnasium.Env):
         terminated = terminated or success
 
         return obs, rew, terminated, False, {"succeed": success, "grasp_penalty": grasp_penalty}
+
+    def _check_collision(self):
+        for i in range(self._data.ncon):
+            contact = self._data.contact[i]
+            geom1_name = mujoco.mj_id2name(self._model, mujoco.mjtObj.mjOBJ_GEOM, contact.geom1)
+            geom2_name = mujoco.mj_id2name(self._model, mujoco.mjtObj.mjOBJ_GEOM, contact.geom2)
+
+            # Check if either geometry is a pillar
+            is_g1_pillar = geom1_name and "pillar" in geom1_name
+            is_g2_pillar = geom2_name and "pillar" in geom2_name
+
+            if is_g1_pillar or is_g2_pillar:
+                # Identify the other object
+                other = geom2_name if is_g1_pillar else geom1_name
+
+                # If other is None (unnamed, likely robot) or not in allowed list
+                if other is None or other not in ["block", "floor", "target_geom", "target"]:
+                    return True
+        return False
 
     def _compute_success(self, gripper_val):
         block_pos = self._data.sensor("block_pos").data

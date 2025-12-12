@@ -35,6 +35,16 @@
     <geom name="target_geom" type="box" size="0.04 0.04 0.005" rgba="0.8 0.1 0.1 1" friction="1 0.005 0.0001"/>
     <site name="target_site" pos="0 0 0" size="0.01" rgba="0 1 0 0.5" type="sphere"/>
     </body>
+
+    <!-- Obstacles (Pillars) -->
+    <geom name="pillar1" type="cylinder" size="0.02 0.2" pos="0.4 0.1 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar2" type="cylinder" size="0.02 0.2" pos="0.4 0.3 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar3" type="cylinder" size="0.02 0.2" pos="0.7 0.1 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar4" type="cylinder" size="0.02 0.2" pos="0.7 0.3 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar5" type="cylinder" size="0.02 0.2" pos="0.3 0.2 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar6" type="cylinder" size="0.02 0.2" pos="0.8 0.2 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar7" type="cylinder" size="0.02 0.2" pos="0.55 0.4 0.2" rgba="0.5 0.5 0.5 1"/>
+    <geom name="pillar8" type="cylinder" size="0.02 0.2" pos="0.55 -0.1 0.2" rgba="0.5 0.5 0.5 1"/>
     
   </worldbody>
 
